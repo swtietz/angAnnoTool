@@ -1,0 +1,19 @@
+<div class="row">
+	<div class="canvasColumn">
+		<div>
+			<button mat-raised-button color="primary" (click)="setHorizontalTool()">Horizontal</button>
+			<button mat-raised-button color="primary" (click)="setVerticalTool()">Vertical</button>
+			<button mat-raised-button color="primary" (click)="createRects()">Create Rects</button>
+		</div>
+		<canvas id='canvas' #canvas></canvas>
+	</div>
+	<div class="labelColumn">
+		<input #csvFile type='file'>
+		<ul>
+			<li *ngFor="let patch of patchManager.patches; let i = index">
+				<!--<span class="badge">{{rect[0]}}, {{rect[1]}}</span> <canvas #patchCanvas id='rect-{{i}}-canvas'></canvas>-->
+				<app-patch-detail [patch]="patch"></app-patch-detail>
+			</li>
+		</ul>
+	</div>
+</div>

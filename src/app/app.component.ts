@@ -1,4 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, EventEmitter } from '@angular/core';
+
+import { Observable, of, BehaviorSubject,  } from 'rxjs';
+
+
+
+
 
 @Component({
   selector: 'app-root',
@@ -7,4 +13,16 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'angAnnoTool';
+
+  
+
+  
+  public ngOnInit() {
+
+  	console.log('after')
+
+  	
+  }
+
+ 
 }

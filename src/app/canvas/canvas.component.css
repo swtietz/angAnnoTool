@@ -1,0 +1,20 @@
+canvas { 
+	border: 1px solid #000; 
+}
+
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.canvasColumn{
+	width: 70%;
+	float: left;
+}
+
+.labelColumn{
+	width: 30%;
+	float: left;
+}
