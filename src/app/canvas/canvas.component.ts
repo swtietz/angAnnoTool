@@ -1,23 +1,22 @@
-import { Component, OnInit, Input, ElementRef, AfterViewInit, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, AfterViewInit, ViewChild, ViewChildren, QueryList, ChangeDetectionStrategy } from '@angular/core';
 import { fromEvent, from, Observable } from 'rxjs';
 import { switchMap, takeUntil, pairwise, delay, map, flatMap } from 'rxjs/operators';
 
 import {CanvasSpace, CanvasForm, Pt, Group, Line, Rectangle} from "pts"
 
 import {MatButtonModule} from '@angular/material/button';
+import {MatListModule} from '@angular/material/list'
 
 import { Patch, PatchManagerService } from '../patch-manager.service';
 
-import { Papa, PapaParseResult } from 'ngx-papaparse';
 
-
-import {readFileAsDataURL, readFileAsBase64} from '@webacad/observable-file-reader';
 
 
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
-  styleUrls: ['./canvas.component.css']
+  styleUrls: ['./canvas.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CanvasComponent implements OnInit {
 
@@ -47,7 +46,7 @@ export class CanvasComponent implements OnInit {
 
 	private currentTool = this.horizontalTool;
 
-  constructor(public patchManager: PatchManagerService, private papa: Papa) { 
+  constructor(public patchManager: PatchManagerService) { 
 
     
     
@@ -126,31 +125,13 @@ export class CanvasComponent implements OnInit {
     //this.captureEvents(canvasEl);
 
     */
-    let parse = (csvData):Observable<PapaParseResult> => {
-      let parser$ = new Observable<PapaParseResult>(observer => {
-      this.papa.parse(csvData,{
-            complete: (result) => {
-                console.log('Parsed: ', result);
-                observer.next(result)
-                observer.complete()
-            }}
-          )
-        }) 
-      return parser$ 
-    }
+    
     
 
     fromEvent(this.csvFileField.nativeElement, 'change').pipe(
-      map((fileSelectedEvent:Event) => {
-        return (<HTMLInputElement>fileSelectedEvent.target).files[0];
-      }),
-      switchMap((file:File):Observable<string> => readFileAsBase64(file)),
-      map((text:string) => atob(text)),
-      switchMap(parse)
-      ).subscribe((data: PapaParseResult) => {
-      console.log('done');
-      console.log(data);
-    });
+      map((fileSelectedEvent:Event) => (<HTMLInputElement>fileSelectedEvent.target).files[0]))
+    .subscribe((file:File) => this.patchManager.initRectsFromCSV(file))
+      
 
     /*
     fromEvent(this.csvFileField.nativeElement, 'change').pipe(

@@ -7,7 +7,12 @@ import { CanvasComponent } from './canvas/canvas.component';
 
 import { PapaParseModule } from 'ngx-papaparse';
 
-import { PatchDetailComponent } from './patch-detail/patch-detail.component'
+import { PatchDetailComponent } from './patch-detail/patch-detail.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+
+import {MatButtonModule, MatListModule, MatCheckboxModule} from '@angular/material';
+import { ScrollDispatchModule } from '@angular/cdk/scrolling';
+
 
 @NgModule({
   declarations: [
@@ -19,7 +24,9 @@ import { PatchDetailComponent } from './patch-detail/patch-detail.component'
   imports: [
     BrowserModule,
     AppRoutingModule,
-    PapaParseModule
+    PapaParseModule,
+    BrowserAnimationsModule,
+    MatButtonModule, MatListModule, MatCheckboxModule, ScrollDispatchModule
   ],
   providers: [],
   bootstrap: [AppComponent]

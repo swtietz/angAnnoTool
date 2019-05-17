@@ -1,14 +1,24 @@
 .patch{
-	margin-top: 10px;
-	margin-bottom: 10px;
+	
+	position: relative;
+
 }
 
 
 .canvas {
-	width: 60%;
-	float:left;
+	width: 33%;
+	display: inline-block;
+	margin: 5px;
+
+}
+
+.labelInput {
+	width: 33%;
+
 }
 
 .label {
+	width: 33%;
+
 
 }

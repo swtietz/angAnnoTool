@@ -24,6 +24,7 @@
     "@webacad/observable-file-reader": "^0.2.0",
     "core-js": "^2.5.4",
     "fs": "0.0.1-security",
+    "hammerjs": "^2.0.8",
     "ngx-papaparse": "^3.0.2",
     "pts": "^0.8.3",
     "rxjs": "^6.3.3",

@@ -9,11 +9,10 @@
 	</div>
 	<div class="labelColumn">
 		<input #csvFile type='file'>
-		<ul>
-			<li *ngFor="let patch of patchManager.patches; let i = index">
-				<!--<span class="badge">{{rect[0]}}, {{rect[1]}}</span> <canvas #patchCanvas id='rect-{{i}}-canvas'></canvas>-->
+		<mat-list>
+			<mat-list-item class="listItem" *ngFor="let patch of patchManager.patches | async">
 				<app-patch-detail [patch]="patch"></app-patch-detail>
-			</li>
-		</ul>
+			</mat-list-item>>
+		</mat-list>
 	</div>
 </div>
