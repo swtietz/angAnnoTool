@@ -9,7 +9,7 @@ import {MatListModule} from '@angular/material/list'
 
 import { Patch, PatchManagerService } from '../patch-manager.service';
 
-
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 
 @Component({
@@ -99,7 +99,18 @@ export class CanvasComponent implements OnInit {
 	    			this.form.image(bitmap, new Pt(0,0))
 						this.form.strokeOnly("#f00 ", 2).lines(this.horLines)
 						this.form.strokeOnly("#f00 ", 2).lines(this.verLines)
-						this.form.fill("#f004 ").rects(this.patchManager.getRectangles())
+            let patches:Patch[] = this.patchManager.patches$.value;
+            for(let i = 0; i < patches.length; i++){
+              let p = patches[i];
+              if(p.active){
+                console.log(p)
+                this.form.fill("#0f04 ").rect(p.rect)
+              }else{
+                this.form.fill("#f004 ").rect(p.rect)
+              }
+              
+            }
+						
 					}
 				)
 

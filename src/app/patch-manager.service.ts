@@ -15,6 +15,8 @@ export class Patch{
 	public rect: Group;
 	public label: number;
 
+	public active: boolean; // true if element is highlighted
+
 	private patchManager: PatchManagerService;
 
 	constructor( id: number, rect: Group, patchManager: PatchManagerService){
@@ -38,6 +40,10 @@ export class Patch{
 
 	setLabel(label:number):void {
 		this.label = label;
+	}
+
+	setActive(active:boolean){
+		this.active = active;
 	}
 
 	

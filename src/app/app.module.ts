@@ -11,7 +11,8 @@ import { PatchDetailComponent } from './patch-detail/patch-detail.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import {MatButtonModule, MatListModule, MatCheckboxModule} from '@angular/material';
-import { ScrollDispatchModule } from '@angular/cdk/scrolling';
+
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 
 @NgModule({
@@ -26,7 +27,7 @@ import { ScrollDispatchModule } from '@angular/cdk/scrolling';
     AppRoutingModule,
     PapaParseModule,
     BrowserAnimationsModule,
-    MatButtonModule, MatListModule, MatCheckboxModule, ScrollDispatchModule
+    MatButtonModule, MatListModule, MatCheckboxModule, NgScrollbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

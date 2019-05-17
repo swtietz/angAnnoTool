@@ -26,6 +26,7 @@
     "fs": "0.0.1-security",
     "hammerjs": "^2.0.8",
     "ngx-papaparse": "^3.0.2",
+    "ngx-scrollbar": "^4.2.0",
     "pts": "^0.8.3",
     "rxjs": "^6.3.3",
     "stream": "0.0.2",
