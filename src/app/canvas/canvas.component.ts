@@ -45,6 +45,8 @@ export class CanvasComponent implements OnInit {
 	public horLines: Group[] = [];
 	public verLines: Group[] = [];
 
+  private deleteStartPoint: Pt;
+
 	//public rectangles: Group[] = [];
 
 
@@ -124,17 +126,24 @@ export class CanvasComponent implements OnInit {
               let p = patches[i];
               if(p.active){
 
-                this.form.fill("#00f4 ").stroke('#00f').rect(p.rect)
+                this.form.fill("#00f8 ").stroke('#00f').rect(p.rect)
               }else{
-                this.form.fill("#f004 ").stroke('#f00 ').rect(p.rect)
+                this.form.fill("#0f03 ").stroke('#0f0a').rect(p.rect)
               }
               
             }
 
             if(this.currentTool == this.horizontalTool){
               this.form.strokeOnly("#f005 ", 10).line([new Pt(0, this.curY), new Pt(this.imageWidth / this.scale, this.curY)])
-            }else{
+            }else if(this.currentTool == this.verticalTool){
               this.form.strokeOnly("#f005 ", 10).line([new Pt(this.curX, 0), new Pt(this.curX, this.imageHeight / this.scale)])
+            }else if(this.currentTool == this.deleteTool){
+              if(!this.deleteStartPoint){
+                this.form.strokeOnly("#00f", 10).point(new Pt(this.curX, this.curY), 10)
+              }else{
+                this.form.strokeOnly("#00f", 10).line([this.deleteStartPoint, new Pt(this.curX, this.curY)])
+              }
+              
             }
             
 						
@@ -209,6 +218,27 @@ export class CanvasComponent implements OnInit {
   	var line = new Group(p1,p2)
 
   	this.horLines.push(line)
+  }
+
+  private deleteTool(event:MouseEvent){
+    let x = event.layerX / this.scale;
+    let y = event.layerY / this.scale;
+
+    if(!this.deleteStartPoint){
+      this.deleteStartPoint = new Pt(x,y);
+    }else{
+      this.patchManager.deleteAlongLine(new Group(this.deleteStartPoint, new Pt(x, y)))
+      this.deleteStartPoint = null;
+    }
+
+    //intersectPolygon2D
+
+  }
+
+  public setDeleteTool(){
+    this.deleteStartPoint = null;
+    this.currentTool = this.deleteTool;
+    
   }
 
 

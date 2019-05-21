@@ -1,6 +1,6 @@
 import { Injectable, QueryList } from '@angular/core';
 
-import {Pt, Group, Rectangle} from "pts"
+import {Pt, Group, Rectangle, Line} from "pts"
 import { switchMap, takeUntil, pairwise, delay, map, flatMap } from 'rxjs/operators';
 import { fromEvent, from, Observable, BehaviorSubject } from 'rxjs';
 
@@ -169,6 +169,16 @@ export class PatchManagerService {
 
       
     });
+  }
+
+
+  public deleteAlongLine(line:Group){
+  	let patches:Patch[] = this.patches$.value
+  	for(let i = 0; i < patches.length; i++){
+  		if(Rectangle.withinBound(patches[i].rect, line[0]) || Line.intersectRect2D(line, patches[i].rect).length != 0){
+  			this.deletePatch(patches[i].id)
+  		}
+  	}
   }
 
 
