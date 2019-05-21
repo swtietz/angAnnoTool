@@ -62,7 +62,12 @@ export class PatchManagerService {
 
   private id: number = 0;
 
+  public imagePath: string;
+
 	private currentImage: HTMLCanvasElement;
+
+
+
 
   constructor(private papa: Papa) { 
   	this.patches.subscribe((patches:Patch[]) => {
@@ -185,14 +190,14 @@ export class PatchManagerService {
   			patch.label,
   			'page_id',
   			'region_url',
-  			'page_url',
+  			this.imagePath,
   			xywh
   			])
   		
   	}
 
   	var csv = this.papa.unparse(data);
-  	saveAs(new Blob([csv]), 'numbers.csv')
+  	saveAs(new Blob([csv]), this.imagePath.split('\\').pop() + '.csv')
   }
 
   setActive(id: number, state: boolean){
@@ -207,6 +212,11 @@ export class PatchManagerService {
 
   get patches() {
     return this.patches$.asObservable();
+  }
+
+
+  setImagePath(path:string){
+  	this.imagePath = path;
   }
 
 

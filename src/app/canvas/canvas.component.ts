@@ -254,6 +254,9 @@ export class CanvasComponent implements OnInit {
 
 	}
 
+  /**
+   * Called when the csv input file has changed
+   */
   public fileChanged(event:Event){
     console.log(event);
     let file = (<HTMLInputElement>event.target).files[0];
@@ -264,15 +267,19 @@ export class CanvasComponent implements OnInit {
     fileReader.readAsText(file);
   }
 
+  /**
+   * Called when the image file has changed
+   */
   readURL(event: Event): void {
     console.log(event);
     let file = (<HTMLInputElement>event.target).files[0];
+    let path = (<HTMLInputElement>event.target).value;
+    this.patchManager.setImagePath(path);
 
     const reader = new FileReader();
     reader.onload = e => this.image.src = <string>reader.result;
 
     reader.readAsDataURL(file);
-    //this.image.src = imageInput.files[0];
   }
 
 	private captureEvents(canvasEl: HTMLCanvasElement) {
