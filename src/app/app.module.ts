@@ -7,6 +7,8 @@ import { CanvasComponent } from './canvas/canvas.component';
 
 import { PapaParseModule } from 'ngx-papaparse';
 
+
+
 import { PatchDetailComponent } from './patch-detail/patch-detail.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 

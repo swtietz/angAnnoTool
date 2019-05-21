@@ -23,7 +23,7 @@ export class CanvasComponent implements OnInit {
 	@ViewChild('canvas') public canvas: ElementRef;
 	@ViewChildren('patchCanvas') patches: QueryList<ElementRef>
   @ViewChild('csvFile') public csvFileField: ElementRef;
-
+  @ViewChild('imgCanvasContainer') public imgCanvasContainer: ElementRef;
 
 
 	private space: CanvasSpace;
@@ -33,9 +33,14 @@ export class CanvasComponent implements OnInit {
 	
 	private cx: CanvasRenderingContext2D;
 
-	public imagePath: string = "assets/test.jpg";
+
+  public image: HTMLImageElement = new Image();
 	public imageWidth: number;
 	public imageHeight: number;
+  public scale: number;
+
+  public curX: number = 0;
+  public curY: number = 0;
 
 	public horLines: Group[] = [];
 	public verLines: Group[] = [];
@@ -60,17 +65,16 @@ export class CanvasComponent implements OnInit {
 
   public ngAfterViewInit() {
   	const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
-  	
-  	this.space = new CanvasSpace("#canvas");
+
+  	let ctx = canvasEl.getContext('2d');
+    ctx.scale(0.1, 0.1)
+
+  	this.space = new CanvasSpace(canvasEl);
   	this.space.setup({offscreen:false})
   	this.form = this.space.getForm();
-    this.space.add( () => {
-    	this.form.point( this.space.pointer, 100 ) 
 
-    });
   	
   	/*
-    this.cx = canvasEl.getContext('2d');
 
     // set some default properties about the line
     this.cx.lineWidth = 3;
@@ -78,38 +82,61 @@ export class CanvasComponent implements OnInit {
     this.cx.strokeStyle = '#000';
     
     */
-    const image = new Image(); // Using optional size for image
+    //const image = new Image(); // Using optional size for image
 
 		
-    fromEvent(image, 'load').subscribe(() => {
-			this.imageWidth = image.naturalWidth;
-			this.imageHeight = image.naturalHeight;
-			canvasEl.width = image.naturalWidth;
-      canvasEl.height = image.naturalHeight;
+    fromEvent(this.image, 'load').subscribe(() => {
+			this.imageWidth = this.image.naturalWidth;
+			this.imageHeight = this.image.naturalHeight;
+
+      let viewportWidth = this.imgCanvasContainer.nativeElement.offsetWidth;
+
+      let imageWidth = this.image.naturalWidth;
+
+      this.scale = viewportWidth/imageWidth;
+
+			canvasEl.width = this.image.naturalWidth;
+      canvasEl.height = this.image.naturalHeight;
+      canvasEl.style.width = this.image.naturalWidth*this.scale +"px";
+      canvasEl.style.height = ""+this.image.naturalHeight*this.scale +"px";
+
+
 
       
-    	from(createImageBitmap(image)).subscribe((bitmap: ImageBitmap) => {
+    	from(createImageBitmap(this.image)).subscribe((bitmap: ImageBitmap) => {
+          
     			let currentImage = document.createElement('canvas'); 
-    			currentImage.width = image.naturalWidth
-    			currentImage.height = image.naturalHeight
+    			currentImage.width = this.image.naturalWidth
+    			currentImage.height = this.image.naturalHeight
     			currentImage.getContext('2d').drawImage(bitmap, 0, 0)
     			this.patchManager.setImage(currentImage)
 
-	    		this.space.add(() => {
+
+	    		this.space.add((time, ftime, space:CanvasSpace) => {
+
+            
+
 	    			this.form.image(bitmap, new Pt(0,0))
-						this.form.strokeOnly("#f00 ", 2).lines(this.horLines)
-						this.form.strokeOnly("#f00 ", 2).lines(this.verLines)
+						this.form.strokeOnly("#f008 ", 10).lines(this.horLines)
+						this.form.strokeOnly("#f008 ", 10).lines(this.verLines)
             let patches:Patch[] = this.patchManager.patches$.value;
             for(let i = 0; i < patches.length; i++){
               let p = patches[i];
               if(p.active){
-                console.log(p)
-                this.form.fill("#0f04 ").rect(p.rect)
+
+                this.form.fill("#00f4 ").stroke('#00f').rect(p.rect)
               }else{
-                this.form.fill("#f004 ").rect(p.rect)
+                this.form.fill("#f004 ").stroke('#f00 ').rect(p.rect)
               }
               
             }
+
+            if(this.currentTool == this.horizontalTool){
+              this.form.strokeOnly("#f005 ", 10).line([new Pt(0, this.curY), new Pt(this.imageWidth / this.scale, this.curY)])
+            }else{
+              this.form.strokeOnly("#f005 ", 10).line([new Pt(this.curX, 0), new Pt(this.curX, this.imageHeight / this.scale)])
+            }
+            
 						
 					}
 				)
@@ -120,23 +147,13 @@ export class CanvasComponent implements OnInit {
 
 
 
-		image.src = this.imagePath;
-
 		this.space.play()
 
-		fromEvent(image, 'load').pipe(delay(500)).subscribe(() => {this.space.pause(), console.log('pause')})
 
-		//this.space.pause();
 
 		fromEvent(canvasEl, 'mouseenter').subscribe(() => {this.space.resume(), console.log('play')})
 
-		fromEvent(canvasEl, 'mouseleave').subscribe(() => {this.space.pause(), console.log('pause')})
-		/*
-    // we'll implement this method to start capturing mouse events
-    //this.captureEvents(canvasEl);
 
-    */
-    
     
 
     fromEvent(this.csvFileField.nativeElement, 'change').pipe(
@@ -144,63 +161,53 @@ export class CanvasComponent implements OnInit {
     .subscribe((file:File) => this.patchManager.initRectsFromCSV(file))
       
 
-    /*
-    fromEvent(this.csvFileField.nativeElement, 'change').pipe(
-      map((fileSelectedEvent:Event) => {
-        return (<HTMLInputElement>fileSelectedEvent.target).files[0];
-      }),
-      switchMap((filePath:File)=> {
-        let fileReader = new FileReader();
-        const fileReader$ = fromEvent(fileReader, 'load')
-        fileReader.readAsText(filePath)
 
-        return fileReader$
-      }),
-      map((fileReadEvent:Event) => {
-        return fileReadEvent
-      })
-      ).subscribe((result:string)=>console.log)
-
-  */
-
-    fromEvent(canvasEl, 'mousemove').subscribe(() => {
+    fromEvent(canvasEl, 'mousemove').subscribe((event:MouseEvent) => {
     	if(! this.space.isPlaying){
     		this.space.play()
+
     	}
+      this.curX = event.layerX / this.scale;
+      this.curY = event.layerY / this.scale;
+
+
     })
 
     fromEvent(canvasEl, 'click').subscribe((event : MouseEvent) => {
-    	console.log(event)
-  		
+      console.log(event);
     	this.currentTool(event)
-  	
     })
 
   }
 
   private verticalTool(event){
-  	var p1:Pt = new Pt(event.layerX, event.layerY);
+    let x = event.layerX / this.scale;
+    let y = event.layerY / this.scale;
+
+  	var p1:Pt = new Pt(x, y);
   	p1[1] = 0
-  	var p2:Pt = new Pt(event.layerX, event.layerY);
-  	p2[1] = this.imageHeight; 
+  	var p2:Pt = new Pt(x, y);
+  	p2[1] = this.imageHeight / this.scale; 
+
 
   	var line = new Group(p1,p2)
 
-  	console.log(line)
-  		
+    console.log(x,y)
+
   	this.verLines.push(line)
   }
 
   private horizontalTool(event){
-  	var p1:Pt = new Pt(event.layerX, event.layerY);
+    let x = event.layerX / this.scale;
+    let y = event.layerY / this.scale;
+
+  	var p1:Pt = new Pt(x, y);
   	p1[0] = 0
-  	var p2:Pt = new Pt(event.layerX, event.layerY);
-  	p2[0] = this.imageWidth; 
+  	var p2:Pt = new Pt(x, y);
+  	p2[0] = this.imageWidth / this.scale; 
 
   	var line = new Group(p1,p2)
 
-  	console.log(line)
-  		
   	this.horLines.push(line)
   }
 
@@ -257,7 +264,16 @@ export class CanvasComponent implements OnInit {
     fileReader.readAsText(file);
   }
 
+  readURL(event: Event): void {
+    console.log(event);
+    let file = (<HTMLInputElement>event.target).files[0];
 
+    const reader = new FileReader();
+    reader.onload = e => this.image.src = <string>reader.result;
+
+    reader.readAsDataURL(file);
+    //this.image.src = imageInput.files[0];
+  }
 
 	private captureEvents(canvasEl: HTMLCanvasElement) {
 	  // this will capture all mousedown events from the canvas element

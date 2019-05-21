@@ -8,10 +8,12 @@ import {readFileAsDataURL, readFileAsBase64} from '@webacad/observable-file-read
 
 import { Papa, PapaParseResult } from 'ngx-papaparse';
 
+import { saveAs } from 'file-saver'
+
 
 export class Patch{
 
-	private id: number;
+	public id: number;
 	public rect: Group;
 	public label: number;
 
@@ -20,6 +22,7 @@ export class Patch{
 	private patchManager: PatchManagerService;
 
 	constructor( id: number, rect: Group, patchManager: PatchManagerService){
+		this.id = id
 		this.rect = rect;
 		this.patchManager = patchManager;
 		
@@ -87,6 +90,22 @@ export class PatchManagerService {
 
   };
 
+  public deletePatch(id:number){
+  	console.log('delete')
+  	let items:Patch[] = [...this.patches$.value];
+		items = items.filter((item:Patch) => item.id != id);
+		this.patches$.next(items)
+  }
+
+  public setPatchLabel(id: number, label:number){
+  	let items:Patch[] = [...this.patches$.value];
+  	items = items.map<Patch>((patch:Patch): Patch => {
+  		if(patch.id == id){ patch.label = label }
+  		return patch
+  	})
+		this.patches$.next(items)
+  }
+
   public getRectangles():Group[]{
   	return this.patches$.value.map(patch => patch.rect)
   }
@@ -145,6 +164,44 @@ export class PatchManagerService {
 
       
     });
+  }
+
+
+  public saveToCsv(){
+  	let data = [] 
+  	data.push([
+  			'region_id',
+  			'number',
+  			'page_id',
+  			'region_url',
+  			'page_url',
+  			'xywh'
+  		])
+  	for(let i = 0; i < this.patches$.value.length; i++){
+  		let patch = this.patches$.value[i]
+  		let xywh = patch.rect[0][0]+","+patch.rect[0][1]+","+patch.getWidth()+","+patch.getHeight();
+  		data.push([
+  			'region_id',
+  			patch.label,
+  			'page_id',
+  			'region_url',
+  			'page_url',
+  			xywh
+  			])
+  		
+  	}
+
+  	var csv = this.papa.unparse(data);
+  	saveAs(new Blob([csv]), 'numbers.csv')
+  }
+
+  setActive(id: number, state: boolean){
+  	let items:Patch[] = [...this.patches$.value];
+
+  	let patch = items.find((patch:Patch) => patch.id == id)
+  	patch.active = state;
+
+		this.patches$.next(items)
   }
 
 

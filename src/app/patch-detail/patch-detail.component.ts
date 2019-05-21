@@ -2,7 +2,8 @@ import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 
 import { fromEvent } from 'rxjs'
 
-import { Patch } from '../patch-manager.service'
+import { Patch, PatchManagerService} from '../patch-manager.service'
+
 
 @Component({
   selector: 'app-patch-detail',
@@ -18,7 +19,7 @@ export class PatchDetailComponent implements OnInit {
 
 
 
-  constructor() { 
+  constructor(public patchManager: PatchManagerService) { 
 
   }
 
@@ -33,10 +34,19 @@ export class PatchDetailComponent implements OnInit {
 		canvEl.height = this.patch.getHeight();
 		canvEl.getContext("2d").putImageData(this.patch.getImageData(), 0,0)
 
-    fromEvent(this.patchContainer.nativeElement,'mousemove').subscribe(() => console.log(this.patch.label))
-    fromEvent(this.patchContainer.nativeElement,'mousemove').subscribe(() => this.patch.setActive(true))
-    fromEvent(this.patchContainer.nativeElement,'mouseleave').subscribe(() => this.patch.setActive(false))
+    fromEvent(this.patchContainer.nativeElement,'mouseenter').subscribe(() => this.patchManager.setActive(this.patch.id, true))
+    fromEvent(this.patchContainer.nativeElement,'mouseleave').subscribe(() => this.patchManager.setActive(this.patch.id, false))
 
+  }
+
+
+  delete(){
+    this.patchManager.deletePatch(this.patch.id)
+  }
+
+  labelChanged(value:string){
+    console.log(value);
+    this.patchManager.setPatchLabel(this.patch.id, parseFloat(value))
   }
 
 

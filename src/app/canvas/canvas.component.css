@@ -14,6 +14,11 @@ canvas {
 	float: left;
 }
 
+.imgCanvasContainer{
+	position: relative;
+	width: 100%;
+}
+
 .labelColumn{
 	width: 30%;
 	float: left;
@@ -24,4 +29,21 @@ canvas {
 	padding-top: 10px;
 	padding-bottom: 10px;
 	border: 1px solid rgba(0,0,0,0.2);
+}
+
+
+input[type=file]{
+	padding:10px;
+}
+
+button{
+	margin:10px;
+}
+
+mat-list-item{
+	height: auto;
+}
+
+app-patch-detail{
+	width: 100%;
 }

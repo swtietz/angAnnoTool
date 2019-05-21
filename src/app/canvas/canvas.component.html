@@ -1,14 +1,20 @@
 <div class="row">
 	<div class="canvasColumn">
 		<div>
+			<span>Load image:</span><input #imageFile type='file' accept="image/*" (change)="readURL($event);">
+		</div>
+		<div>
 			<button mat-raised-button color="primary" (click)="setHorizontalTool()">Horizontal</button>
 			<button mat-raised-button color="primary" (click)="setVerticalTool()">Vertical</button>
 			<button mat-raised-button color="primary" (click)="createRects()">Create Rects</button>
 		</div>
-		<canvas id='canvas' #canvas></canvas>
+		<div #imgCanvasContainer class="imgCanvasContainer">
+			<canvas #canvas></canvas>
+		</div>
 	</div>
 	<div class="labelColumn">
-		<input #csvFile type='file'>
+		<span>Import rectangles:</span><input #csvFile type='file'>
+		<button (click)="patchManager.saveToCsv()">Save rectangles</button>
 		<div style="height:90vh; margin: 2em; background: #EFF2F3">
 		<ng-scrollbar>
 			<div style="display: flex;">

@@ -1,28 +1,48 @@
 .patch{
-	
-	position: relative;
+	display: flex; 
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	align-items: stretch;
 
 }
 
 
-.canvas {
-	width: 33%;
-	display: inline-block;
+.canvas{
+
+	order: 1;
 	margin: 5px;
+}
+
+.label {
+	order: 2;
+	margin: auto;
+	flex-grow: 2;
+	text-align: end;
 
 }
 
 .labelInput {
-	width: 33%;
 
+	order: 3;
+	margin: auto;
+    max-width: 50px;
 }
 
-.label {
-	width: 33%;
+.deleteButton{
 
-
+	order: 4;
+	margin: auto;
 }
+
+
 
 .active {
-	background: rgb(1,1,0);
+	background: rgba(0,0,1,0.2);
+}
+
+
+canvas{
+	height:40px;
+	max-width: 100px;
 }

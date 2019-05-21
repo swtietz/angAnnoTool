@@ -2,6 +2,9 @@
 	<div class="canvas" >
 		<canvas #patchCanvas></canvas> 
 	</div>
-	<span class="label">Label: </span><input class="labelInput" type="string" name="label" value="{{patch.label}}">
+
+	<span class="label">Label: </span>
+	<input class="labelInput" type="string" name="label" value="{{patch.label}}" (change)="labelChanged($event.target.value)">
+	<button class="deleteButton" mat-raised-button color="primary" (click)="delete()">Delete</button>
 
 </div>
