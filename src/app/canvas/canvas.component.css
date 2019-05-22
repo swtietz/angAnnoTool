@@ -1,5 +1,6 @@
 canvas { 
 	border: 1px solid #000; 
+	position: absolute;
 }
 
 
@@ -16,6 +17,11 @@ canvas {
 
 .imgCanvasContainer{
 	position: relative;
+	width: 100%;
+}
+
+.imageUnderlay{
+	position: absolute;
 	width: 100%;
 }
 

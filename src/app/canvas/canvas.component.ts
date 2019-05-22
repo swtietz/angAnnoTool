@@ -24,7 +24,7 @@ export class CanvasComponent implements OnInit {
 	@ViewChildren('patchCanvas') patches: QueryList<ElementRef>
   @ViewChild('csvFile') public csvFileField: ElementRef;
   @ViewChild('imgCanvasContainer') public imgCanvasContainer: ElementRef;
-
+  @ViewChild('imageUnderlay') public imageUnderlay: ElementRef;
 
 	private space: CanvasSpace;
 	private form: CanvasForm;
@@ -72,7 +72,7 @@ export class CanvasComponent implements OnInit {
     ctx.scale(0.1, 0.1)
 
   	this.space = new CanvasSpace(canvasEl);
-  	this.space.setup({offscreen:false})
+  	this.space.setup({offscreen:false, bgcolor:'#fff0'})
   	this.form = this.space.getForm();
 
   	
@@ -116,9 +116,11 @@ export class CanvasComponent implements OnInit {
 
 	    		this.space.add((time, ftime, space:CanvasSpace) => {
 
-            
 
-	    			this.form.image(bitmap, new Pt(0,0))
+
+            this.space.ctx.clearRect(0,0,this.imageWidth,this.imageHeight);
+
+	    			//this.form.image(bitmap, new Pt(0,0))
 						this.form.strokeOnly("#f008 ", 10).lines(this.horLines)
 						this.form.strokeOnly("#f008 ", 10).lines(this.verLines)
             let patches:Patch[] = this.patchManager.patches$.value;
@@ -183,8 +185,7 @@ export class CanvasComponent implements OnInit {
     })
 
     fromEvent(canvasEl, 'click').subscribe((event : MouseEvent) => {
-      console.log(event);
-    	this.currentTool(event)
+      this.currentTool(event)
     })
 
   }
@@ -201,8 +202,7 @@ export class CanvasComponent implements OnInit {
 
   	var line = new Group(p1,p2)
 
-    console.log(x,y)
-
+    
   	this.verLines.push(line)
   }
 
@@ -307,7 +307,10 @@ export class CanvasComponent implements OnInit {
     this.patchManager.setImagePath(path);
 
     const reader = new FileReader();
-    reader.onload = e => this.image.src = <string>reader.result;
+    reader.onload = e => {
+      this.image.src = <string>reader.result;
+      this.imageUnderlay.nativeElement.src = <string>reader.result;
+    }
 
     reader.readAsDataURL(file);
   }
