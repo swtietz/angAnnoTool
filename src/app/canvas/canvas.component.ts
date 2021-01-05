@@ -121,8 +121,8 @@ export class CanvasComponent implements OnInit {
             this.space.ctx.clearRect(0,0,this.imageWidth,this.imageHeight);
 
 	    			//this.form.image(bitmap, new Pt(0,0))
-						this.form.strokeOnly("#f008 ", 10).lines(this.horLines)
-						this.form.strokeOnly("#f008 ", 10).lines(this.verLines)
+						this.form.strokeOnly("#f008 ", 4).lines(this.horLines)
+						this.form.strokeOnly("#f008 ", 4).lines(this.verLines)
             let patches:Patch[] = this.patchManager.patches$.value;
             for(let i = 0; i < patches.length; i++){
               let p = patches[i];
@@ -136,14 +136,14 @@ export class CanvasComponent implements OnInit {
             }
 
             if(this.currentTool == this.horizontalTool){
-              this.form.strokeOnly("#f005 ", 10).line([new Pt(0, this.curY), new Pt(this.imageWidth / this.scale, this.curY)])
+              this.form.strokeOnly("#f005 ", 4).line([new Pt(0, this.curY), new Pt(this.imageWidth * this.scale, this.curY)])
             }else if(this.currentTool == this.verticalTool){
-              this.form.strokeOnly("#f005 ", 10).line([new Pt(this.curX, 0), new Pt(this.curX, this.imageHeight / this.scale)])
+              this.form.strokeOnly("#f005 ", 4).line([new Pt(this.curX, 0), new Pt(this.curX, this.imageHeight * this.scale)])
             }else if(this.currentTool == this.deleteTool){
               if(!this.deleteStartPoint){
-                this.form.strokeOnly("#00f", 10).point(new Pt(this.curX, this.curY), 10)
+                this.form.strokeOnly("#00f", 4).point(new Pt(this.curX, this.curY), 10)
               }else{
-                this.form.strokeOnly("#00f", 10).line([this.deleteStartPoint, new Pt(this.curX, this.curY)])
+                this.form.strokeOnly("#00f", 4).line([this.deleteStartPoint, new Pt(this.curX, this.curY)])
               }
               
             }
@@ -180,7 +180,7 @@ export class CanvasComponent implements OnInit {
     	}
       this.curX = event.layerX / this.scale;
       this.curY = event.layerY / this.scale;
-
+      console.log(this.scale)
 
     })
 
@@ -197,7 +197,7 @@ export class CanvasComponent implements OnInit {
   	var p1:Pt = new Pt(x, y);
   	p1[1] = 0
   	var p2:Pt = new Pt(x, y);
-  	p2[1] = this.imageHeight / this.scale; 
+  	p2[1] = this.imageHeight * this.scale; 
 
 
   	var line = new Group(p1,p2)
@@ -213,7 +213,7 @@ export class CanvasComponent implements OnInit {
   	var p1:Pt = new Pt(x, y);
   	p1[0] = 0
   	var p2:Pt = new Pt(x, y);
-  	p2[0] = this.imageWidth / this.scale; 
+  	p2[0] = this.imageWidth * this.scale; 
 
   	var line = new Group(p1,p2)
 
